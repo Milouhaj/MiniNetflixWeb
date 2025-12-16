@@ -24,7 +24,7 @@ h2{
 input, button{
   width:100%;
   padding:12px;
-  margin:5px 0;
+  margin:6px 0;
   border-radius:8px;
   border:none;
   font-size:16px;
@@ -36,7 +36,7 @@ button{
 }
 video{
   width:100%;
-  max-height:500px;
+  max-height:520px;
   background:#000;
   border-radius:12px;
 }
@@ -47,21 +47,24 @@ video{
 <div id="app">
   <h2>🎬 MiniNetflix Player</h2>
 
-  <input id="videoUrl" placeholder="Collez un lien MP4 ou M3U8">
-  <button onclick="play()">Lire</button>
+  <input id="videoUrl" placeholder="Lien HTTPS MP4 ou M3U8">
+  <button id="playBtn">Lire</button>
 
-  <video id="video" controls></video>
+  <video id="video" controls playsinline></video>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<!-- HLS LOCAL (OBLIGATOIRE) -->
+<script src="js/hls.min.js"></script>
+
 <script>
-function play(){
-  const url = document.getElementById("videoUrl").value;
-  const video = document.getElementById("video");
+const btn = document.getElementById("playBtn");
+const video = document.getElementById("video");
 
-  if(!url) return alert("Veuillez coller un lien vidéo");
+btn.addEventListener("click", () => {
+  const url = document.getElementById("videoUrl").value.trim();
+  if(!url) return alert("Collez un lien vidéo HTTPS");
 
-  if(url.endsWith(".m3u8") && Hls.isSupported()){
+  if(url.endsWith(".m3u8") && window.Hls && Hls.isSupported()){
     if(window.hls) window.hls.destroy();
     window.hls = new Hls();
     window.hls.loadSource(url);
@@ -71,7 +74,7 @@ function play(){
   }
 
   video.play();
-}
+});
 </script>
 </body>
 </html>
