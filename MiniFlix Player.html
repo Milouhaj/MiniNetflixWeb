@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<title>MiniFlix Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:Arial, sans-serif;
+}
+#app {
+  max-width:1000px;
+  margin:auto;
+  padding:15px;
+}
+h2 {
+  text-align:center;
+  margin-bottom:15px;
+}
+input, button {
+  width:100%;
+  padding:12px;
+  margin:5px 0;
+  border-radius:8px;
+  border:none;
+  font-size:16px;
+}
+button {
+  background:#e50914;
+  color:#fff;
+  cursor:pointer;
+}
+video {
+  width:100%;
+  max-height:600px;
+  background:#000;
+  border-radius:12px;
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <h2>🎬 MiniFlix Player</h2>
+  <input id="videoUrl" placeholder="http://tv14s.xyz:8080/movie/BvQ3j3/899915/213882.mp4">
+  <button onclick="playVideo()">Lire</button>
+  <video id="video" controls=""></video>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+function playVideo(){
+  const url = document.getElementById("videoUrl").value.trim();
+  const video = document.getElementById("video");
+  if(!url) return alert("Veuillez coller un lien vidéo valide HTTPS");
+
+  // Nettoyer HLS existant
+  if(window.hls) { window.hls.destroy(); window.hls = null; }
+
+  // MP4 simple
+  if(url.endsWith(".mp4")) {
+    video.src = url;
+    video.play();
+    return;
+  }
+
+  // M3U8 via HLS.js
+  if(Hls.isSupported()) {
+    window.hls = new Hls();
+    window.hls.loadSource(url);
+    window.hls.attachMedia(video);
+    window.hls.on(Hls.Events.MANIFEST_PARSED, function() {
+      video.play();
+    });
+  } else if(video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = url;
+    video.play();
+  } else {
+    alert("Votre navigateur ne supporte pas HLS");
+  }
+}
+</script>
+
+
+</body></html>
