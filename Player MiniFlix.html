@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>MiniFlix Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+#app {
+  max-width:1000px;
+  margin:auto;
+  padding:15px;
+}
+h2 {
+  text-align:center;
+  margin-bottom:15px;
+}
+video {
+  width:100%;
+  max-height:500px;
+  background:#000;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+#playlistContainer {
+  white-space: nowrap;
+  overflow-x: auto;
+  padding: 10px;
+  background: #111;
+  border-radius: 8px;
+}
+#playlistContainer::-webkit-scrollbar {
+  height: 6px;
+}
+#playlistContainer::-webkit-scrollbar-thumb {
+  background: #e50914;
+  border-radius: 10px;
+}
+.card {
+  display:inline-block;
+  margin:5px;
+  cursor:pointer;
+}
+.card img {
+  width:150px;
+  height:90px;
+  object-fit:cover;
+  border-radius:6px;
+  display:block;
+}
+.card-title {
+  text-align:center;
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  width:150px;
+  color:#fff;
+}
+.card:hover {
+  transform:scale(1.08);
+  transition:0.2s;
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <h2>🎬 MiniFlix Player</h2>
+  <video id="video" controls></video>
+  <div id="playlistContainer"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+const video = document.getElementById("video");
+const playlistContainer = document.getElementById("playlistContainer");
+let hls;
+
+// Charger la playlist depuis playlist.json
+fetch("playlist.json")
+  .then(res => res.json())
+  .then(data => {
+    data.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "card";
+      
+      const img = document.createElement("img");
+      img.src = item.poster || "https://via.placeholder.com/150x90?text=Video";
+      
+      const title = document.createElement("div");
+      title.className = "card-title";
+      title.textContent = item.title;
+
+      card.appendChild(img);
+      card.appendChild(title);
+      playlistContainer.appendChild(card);
+
+      card.addEventListener("click", () => {
+        if (hls) hls.destroy();
+        if (item.url.endsWith(".m3u8") && Hls.isSupported()) {
+          hls = new Hls();
+          hls.loadSource(item.url);
+          hls.attachMedia(video);
+        } else {
+          video.src = item.url;
+        }
+        video.play();
+      });
+    });
+
+    // Lancer la première vidéo automatiquement
+    if(data.length>0) {
+      const first = data[0];
+      if(first.url.endsWith(".m3u8") && Hls.isSupported()) {
+        hls = new Hls();
+        hls.loadSource(first.url);
+        hls.attachMedia(video);
+      } else {
+        video.src = first.url;
+      }
+      video.play();
+    }
+  })
+  .catch(err => console.error("Erreur playlist.json:", err));
+</script>
+</body>
+</html>
