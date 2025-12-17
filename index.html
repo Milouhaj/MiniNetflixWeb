@@ -4,43 +4,19 @@
 <meta charset="UTF-8">
 <title>MiniFlix Player</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body{margin:0;background:#000;color:#fff;font-family:Arial}
-#app{max-width:900px;margin:auto;padding:20px}
-video{width:100%;height:auto;max-height:500px;background:#000}
-input,button{width:100%;padding:12px;margin:8px 0;font-size:16px}
-button{background:#e50914;color:#fff;border:none}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="app">
-<h2>🎬 MiniFlix Player (Test officiel)</h2>
+  <h2>🎬 MiniFlix Player</h2>
 
-<button onclick="playMP4()">▶ MP4 officiel</button>
-<button onclick="playM3U8()">▶ M3U8 officiel</button>
+  <input id="videoUrl" placeholder="Collez un lien MP4 ou M3U8">
+  <button id="playBtn">Lire</button>
 
-<video id="video" controls></video>
+  <video id="video" controls></video>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script>
-const video = document.getElementById("video");
-
-function playMP4(){
-  video.src = "https://www.w3schools.com/html/mov_bbb.mp4";
-  video.play();
-}
-
-function playM3U8(){
-  const url = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
-  if(Hls.isSupported()){
-    const hls = new Hls();
-    hls.loadSource(url);
-    hls.attachMedia(video);
-  } else {
-    video.src = url;
-  }
-}
-</script>
+<script src="player.js"></script>
 </body>
 </html>
