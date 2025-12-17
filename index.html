@@ -4,19 +4,84 @@
 <meta charset="UTF-8">
 <title>MiniFlix Player</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
+
+<style>
+body{
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:Arial, sans-serif;
+}
+#app{
+  max-width:1000px;
+  margin:auto;
+  padding:15px;
+}
+input, button{
+  width:100%;
+  padding:12px;
+  margin:6px 0;
+  border-radius:8px;
+  border:none;
+  font-size:16px;
+}
+button{
+  background:#e50914;
+  color:#fff;
+  cursor:pointer;
+}
+video{
+  width:100%;
+  max-height:520px;
+  background:#000;
+  border-radius:12px;
+}
+</style>
 </head>
+
 <body>
 <div id="app">
   <h2>🎬 MiniFlix Player</h2>
 
-  <input id="videoUrl" placeholder="Collez un lien MP4 ou M3U8">
-  <button id="playBtn">Lire</button>
+  <input id="videoUrl" placeholder="Lien MP4 ou M3U8 (HTTPS uniquement)">
+  <button onclick="playVideo()">Lire</button>
 
-  <video id="video" controls></video>
+  <video id="video" controls playsinline></video>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script src="player.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
+
+<script>
+function playVideo(){
+  const url = document.getElementById("videoUrl").value.trim();
+  const video = document.getElementById("video");
+
+  if(!url){
+    alert("Veuillez coller un lien vidéo");
+    return;
+  }
+
+  if(url.endsWith(".m3u8")){
+    if(Hls.isSupported()){
+      if(window.hls) window.hls.destroy();
+      window.hls = new Hls();
+      window.hls.loadSource(url);
+      window.hls.attachMedia(video);
+    } else if(video.canPlayType("application/vnd.apple.mpegurl")){
+      video.src = url;
+    } else {
+      alert("HLS non supporté par ce navigateur");
+      return;
+    }
+  } else {
+    video.src = url;
+  }
+
+  video.play().catch(e=>{
+    alert("Lecture bloquée (serveur non compatible navigateur)");
+  });
+}
+</script>
+
 </body>
 </html>
