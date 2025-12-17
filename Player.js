@@ -1,42 +1,15 @@
-const video = document.getElementById("video");
-const title = document.getElementById("title");
-
-let hls = null;
-
-function playVideo(url, name) {
-  title.textContent = name || "Lecture en cours";
-
-  if (hls) {
-    hls.destroy();
-    hls = null;
-  }
-
-  if (url.endsWith(".m3u8") && window.Hls && Hls.isSupported()) {
-    hls = new Hls();
-    hls.loadSource(url);
-    hls.attachMedia(video);
-  } else {
-    video.src = url;
-  }
-
-  video.play().catch(() => {
-    alert("Lecture bloquée par le navigateur");
-  });
-}
-
 fetch("playlist.json")
-  .then(res => res.json())
+  .then(response => response.json())
   .then(list => {
-    const container = document.getElementById("playlist");
+    if (!list || list.length === 0) return;
 
-    list.forEach(item => {
-      const btn = document.createElement("button");
-      btn.textContent = item.title;
-      btn.onclick = () => playVideo(item.url, item.title);
-      container.appendChild(btn);
-    });
+    const video = document.getElementById("video");
+    const first = list[0];
+
+    // MP4 direct
+    if (first.url.endsWith(".mp4")) {
+      video.src = first.url;
+      video.load();
+    }
   })
-  .catch(() => {
-    document.getElementById("playlist").textContent =
-      "Impossible de charger la playlist.";
-  });
+  .catch(err => console.error(err));
