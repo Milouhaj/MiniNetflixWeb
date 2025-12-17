@@ -1,25 +1,33 @@
-const playBtn = document.getElementById('playBtn');
-const video = document.getElementById('video');
+const playlistDiv = document.getElementById('playlist');
+const categoryFilter = document.getElementById('categoryFilter');
+let playlist = [];
 
-playBtn.addEventListener('click', () => {
-    let url = document.getElementById('videoUrl').value.trim();
-    if (!url) return alert("Veuillez coller un lien vidéo");
+// Charger le fichier JSON
+fetch('data/playlist.json')
+  .then(res => res.json())
+  .then(data => {
+    playlist = data;
+    renderPlaylist(playlist);
+  });
 
-    // Proxy CORS intégré
-    if(!url.startsWith('https://corsproxy.io/?')) {
-        url = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-    }
-
-    // Supprimer ancien Hls
-    if(window.hls) window.hls.destroy();
-
-    if(url.endsWith('.m3u8') && Hls.isSupported()){
-        window.hls = new Hls();
-        window.hls.loadSource(url);
-        window.hls.attachMedia(video);
-        window.hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-    } else {
-        video.src = url;
-        video.play();
-    }
+// Filtrage par catégorie
+categoryFilter.addEventListener('change', () => {
+  const cat = categoryFilter.value;
+  if(cat === 'all') renderPlaylist(playlist);
+  else renderPlaylist(playlist.filter(p => p.category === cat));
 });
+
+// Afficher les cartes
+function renderPlaylist(list) {
+  playlistDiv.innerHTML = '';
+  list.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${item.logo}" alt="${item.title}" />
+      <div>${item.title}</div>
+      <button disabled>Lire</button>
+    `;
+    playlistDiv.appendChild(card);
+  });
+}

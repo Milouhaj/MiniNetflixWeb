@@ -1,0 +1,20 @@
+[
+  {
+    "title": "TF1",
+    "category": "TV",
+    "logo": "https://via.placeholder.com/100x60?text=TF1",
+    "url": ""
+  },
+  {
+    "title": "BeIN Sport",
+    "category": "Sport",
+    "logo": "https://via.placeholder.com/100x60?text=BeIN",
+    "url": ""
+  },
+  {
+    "title": "MTV",
+    "category": "Music",
+    "logo": "https://via.placeholder.com/100x60?text=MTV",
+    "url": ""
+  }
+]

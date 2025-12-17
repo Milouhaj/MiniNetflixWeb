@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>MiniFlix Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <h2>🎬 MiniFlix Player</h2>
+
+  <div>
+    <label for="categoryFilter">Filtrer par catégorie :</label>
+    <select id="categoryFilter">
+      <option value="all">Toutes</option>
+      <option value="TV">TV</option>
+      <option value="Sport">Sport</option>
+      <option value="Music">Musique</option>
+      <option value="Films">Films</option>
+    </select>
+  </div>
+
+  <div id="playlist"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
